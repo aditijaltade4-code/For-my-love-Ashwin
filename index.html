@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Cozy Space - Virtual Apartment</title>
+  <!-- Google Fonts: Outfit for UI, Dancing Script for personal notes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Ambient Glow -->
+  <div class="ambient-glow"></div>
+
+  <!-- Settings Trigger (Gear Icon) -->
+  <button id="settings-trigger" class="btn-icon" aria-label="Open Renovation Menu">
+    <i class="fa-solid fa-cog"></i>
+  </button>
+
+  <!-- Renovation Menu (Settings Drawer) -->
+  <aside id="renovation-menu" class="settings-drawer">
+    <div class="drawer-header">
+      <h3><i class="fa-solid fa-paint-roller"></i> Renovation Menu</h3>
+      <button id="settings-close" class="btn-close">&times;</button>
+    </div>
+    <div class="drawer-content">
+      <p class="section-title">Wall Paint & Decor Theme</p>
+      <div class="theme-options">
+        <button class="theme-swatch active" data-theme="cozy-morning" style="background: linear-gradient(135deg, #fcf8f2, #e8a7a1);">
+          <span>Cozy Morning</span>
+        </button>
+        <button class="theme-swatch" data-theme="sage-serenity" style="background: linear-gradient(135deg, #edf2ee, #7da087);">
+          <span>Sage Serenity</span>
+        </button>
+        <button class="theme-swatch" data-theme="midnight-loft" style="background: linear-gradient(135deg, #111a2e, #e6c280);">
+          <span>Midnight Loft</span>
+        </button>
+      </div>
+
+      <p class="section-title" style="margin-top: 2rem;">Weather Controls (Demo)</p>
+      <div class="weather-controls">
+        <div class="control-group">
+          <label for="weather-user1">User 1 (Location A)</label>
+          <select id="weather-user1">
+            <option value="sunny">Sunny</option>
+            <option value="rainy" selected>Rainy</option>
+            <option value="snowy">Snowy</option>
+            <option value="night">Clear Night</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="weather-user2">User 2 (Location B)</label>
+          <select id="weather-user2">
+            <option value="sunny">Sunny</option>
+            <option value="rainy">Rainy</option>
+            <option value="snowy">Snowy</option>
+            <option value="night" selected>Clear Night</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Dashboard Container -->
+  <main class="apartment-container">
+    
+    <!-- Title / Welcome -->
+    <header class="app-header">
+      <h1>Our Cozy Space</h1>
+      <p>A little digital sanctuary built for two hearts miles apart.</p>
+    </header>
+
+    <!-- The Living Room Wall Grid -->
+    <section class="room-wall">
+      
+      <!-- Split-Pane Weather Window -->
+      <article class="weather-window-container" id="weather-window">
+        <div class="window-frame">
+          <div class="window-pane pane-left" id="pane-user1">
+            <div class="pane-content">
+              <span class="user-label">Ashwin</span>
+              <div class="weather-effect-layer"></div>
+              <div class="weather-info">
+                <i class="weather-icon fa-solid fa-cloud-showers-heavy"></i>
+                <span class="temp">22°C</span>
+                <span class="loc-desc">Rainy afternoon</span>
+              </div>
+            </div>
+          </div>
+          <div class="window-pane pane-right" id="pane-user2">
+            <div class="pane-content">
+              <span class="user-label">Aditi</span>
+              <div class="weather-effect-layer"></div>
+              <div class="weather-info">
+                <i class="weather-icon fa-solid fa-moon"></i>
+                <span class="temp">18°C</span>
+                <span class="loc-desc">Starlit night</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="window-sill"></div>
+      </article>
+
+      <!-- 3 Memory Photo Frames -->
+      <article class="memory-wall">
+        <div class="wall-shelf">
+          <div class="photo-frame" data-gallery-index="0" tabindex="0">
+            <div class="frame-border">
+              <div class="photo-container">
+                <img src="images/sunset.png" alt="Couple watching sunset">
+              </div>
+            </div>
+            <div class="frame-tag">Golden Hours</div>
+          </div>
+
+          <div class="photo-frame" data-gallery-index="1" tabindex="0">
+            <div class="frame-border">
+              <div class="photo-container">
+                <img src="images/cafe.png" alt="Cozy rainy cafe">
+              </div>
+            </div>
+            <div class="frame-tag">Our Cafe Date</div>
+          </div>
+
+          <div class="photo-frame" data-gallery-index="2" tabindex="0">
+            <div class="frame-border">
+              <div class="photo-container">
+                <img src="images/bridge.png" alt="Starlit bridge walk">
+              </div>
+            </div>
+            <div class="frame-tag">Under the Stars</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Countdown Calendar -->
+      <article class="countdown-calendar" tabindex="0">
+        <div class="calendar-ring-left"></div>
+        <div class="calendar-ring-right"></div>
+        <div class="calendar-header">
+          <span class="month">Reunion Countdown</span>
+        </div>
+        <div class="calendar-body">
+          <div class="countdown-display">
+            <div class="time-block">
+              <span class="time-val" id="days">00</span>
+              <span class="time-lbl">Days</span>
+            </div>
+            <div class="time-block">
+              <span class="time-val" id="hours">00</span>
+              <span class="time-lbl">Hours</span>
+            </div>
+            <div class="time-block">
+              <span class="time-val" id="minutes">00</span>
+              <span class="time-lbl">Mins</span>
+            </div>
+            <div class="time-block">
+              <span class="time-val" id="seconds">00</span>
+              <span class="time-lbl">Secs</span>
+            </div>
+          </div>
+          <p class="calendar-footer">Until we meet again! <i class="fa-solid fa-heart beat"></i></p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- The Desk (Floor Area) -->
+    <section class="room-floor">
+      <div class="desk-surface">
+        
+        <!-- Interactive Desk Lamp -->
+        <div class="lamp-interactive-area" id="desk-lamp" tabindex="0" aria-label="Toggle Desk Lamp">
+          <div class="lamp-glow-zone"></div>
+          <svg class="lamp-svg" viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+            <!-- Lamp Base -->
+            <path class="lamp-base" d="M30 140 C 30 130, 70 130, 70 140 Z" fill="#5c5c5c"/>
+            <rect class="lamp-base-bottom" x="25" y="140" width="50" height="6" rx="3" fill="#3a3a3a"/>
+            <!-- Lamp Neck/Arm -->
+            <path class="lamp-arm" d="M 50 130 L 50 80 L 35 50" stroke="#5c5c5c" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <circle cx="50" cy="80" r="5" fill="#3a3a3a"/>
+            <circle cx="35" cy="50" r="5" fill="#3a3a3a"/>
+            <!-- Lamp Head Joint & Shade -->
+            <path class="lamp-shade" d="M 15 50 L 55 35 L 70 65 L 30 80 Z" fill="#e74c3c"/>
+            <!-- Bulb -->
+            <circle class="lamp-bulb" cx="48" cy="60" r="8" fill="#f1c40f"/>
+            <!-- Light Beam (drawn but controlled via CSS opacity) -->
+            <polygon class="lamp-beam" points="40 68, 0 150, 100 150, 56 62" fill="url(#beam-grad)" opacity="0"/>
+            
+            <defs>
+              <linearGradient id="beam-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fff2a3" stop-opacity="0.8"/>
+                <stop offset="10%" stop-color="#fff2a3" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#fff2a3" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="lamp-label">Leave a Light On</div>
+        </div>
+
+        <!-- The Desk Notebook -->
+        <div class="notebook-interactive" id="desk-notebook" tabindex="0" aria-label="Open Letters Notebook">
+          <div class="notebook-cover">
+            <div class="notebook-spine"></div>
+            <div class="notebook-content-mock">
+              <i class="fa-solid fa-envelope"></i>
+              <span>Open When...</span>
+            </div>
+            <div class="notebook-bookmark"></div>
+          </div>
+          <div class="notebook-label">Love Letters</div>
+        </div>
+
+      </div>
+      
+      <!-- Cozy Rug under desk -->
+      <div class="cozy-rug"></div>
+    </section>
+
+  </main>
+
+  <!-- Gallery Modal Overlay -->
+  <div id="gallery-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container modal-large">
+      <button class="modal-close" id="gallery-close">&times;</button>
+      <h2 class="modal-title">Memory Lane</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="images/sunset.png" alt="Memory 1">
+          <div class="gallery-caption">Watching the golden sunset together. "I'd watch every sunset with you."</div>
+        </div>
+        <div class="gallery-item">
+          <img src="images/cafe.png" alt="Memory 2">
+          <div class="gallery-caption">Sheltered from the rain inside our favorite little cafe. "Warm tea and warm hugs."</div>
+        </div>
+        <div class="gallery-item">
+          <img src="images/bridge.png" alt="Memory 3">
+          <div class="gallery-caption">Under the vast starlit night. "Distance means nothing when someone means everything."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notebook "Open When" Modal Overlay -->
+  <div id="notebook-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container modal-large">
+      <button class="modal-close" id="notebook-close">&times;</button>
+      <h2 class="modal-title font-cursive">Open When... Letters</h2>
+      <p class="modal-subtitle">Pick an envelope for whenever you need a little piece of me.</p>
+      
+      <div class="envelopes-grid">
+        
+        <!-- Card 1 -->
+        <div class="envelope-card" data-note-id="miss-me" tabindex="0">
+          <div class="envelope-back"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-front">
+            <span class="envelope-stamp"><i class="fa-solid fa-heart"></i></span>
+            <h3 class="envelope-title">...you miss me</h3>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="envelope-card" data-note-id="cant-sleep" tabindex="0">
+          <div class="envelope-back"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-front">
+            <span class="envelope-stamp"><i class="fa-solid fa-moon"></i></span>
+            <h3 class="envelope-title">...you can't sleep</h3>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="envelope-card" data-note-id="sad-day" tabindex="0">
+          <div class="envelope-back"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-front">
+            <span class="envelope-stamp"><i class="fa-solid fa-cloud-rain"></i></span>
+            <h3 class="envelope-title">...you have a bad day</h3>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="envelope-card" data-note-id="need-laugh" tabindex="0">
+          <div class="envelope-back"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-front">
+            <span class="envelope-stamp"><i class="fa-solid fa-face-laugh-beam"></i></span>
+            <h3 class="envelope-title">...you need a smile</h3>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Letter Reading Overlay -->
+  <div id="letter-modal" class="modal-overlay letter-overlay" aria-hidden="true">
+    <div class="letter-paper">
+      <button class="modal-close letter-close" id="letter-close">&times;</button>
+      <div class="letter-stamp"><i class="fa-solid fa-heart"></i></div>
+      <div class="letter-content">
+        <h3 id="letter-title" class="font-cursive">Letter Title</h3>
+        <p id="letter-body" class="font-cursive">Letter text goes here...</p>
+        <p class="letter-signature font-cursive">Forever and always,<br>Your love ❤️</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
