@@ -1,363 +1,441 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   // ==========================================
-  // 1. DYNAMIC THEME ENGINE ("Renovation Menu")
+  // HELPER: Generic Modal
+  // ==========================================
+  function setupModal(modalId, triggerId, closeId) {
+    const modal   = document.getElementById(modalId);
+    if (!modal) return;
+    const trigger = triggerId ? document.getElementById(triggerId) : null;
+    const closeBtn = closeId  ? document.getElementById(closeId)   : null;
+
+    const open  = () => { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
+    const close = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
+
+    if (trigger) {
+      trigger.addEventListener('click', open);
+      trigger.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    }
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  }
+
+
+  // ==========================================
+  // 1. RENOVATION MENU (6-THEME SWITCHER)
   // ==========================================
   const settingsTrigger = document.getElementById('settings-trigger');
-  const renovationMenu = document.getElementById('renovation-menu');
-  const settingsClose = document.getElementById('settings-close');
-  const themeSwatches = document.querySelectorAll('.theme-swatch');
+  const renovationMenu  = document.getElementById('renovation-menu');
+  const settingsClose   = document.getElementById('settings-close');
+  const themeSwatches   = document.querySelectorAll('.theme-swatch');
 
-  // Toggle Drawer
-  settingsTrigger.addEventListener('click', () => {
-    renovationMenu.classList.add('open');
-  });
-
-  settingsClose.addEventListener('click', () => {
-    renovationMenu.classList.remove('open');
-  });
-
-  // Close drawer if clicked outside
-  document.addEventListener('click', (e) => {
+  settingsTrigger.addEventListener('click', () => renovationMenu.classList.add('open'));
+  settingsClose.addEventListener('click',   () => renovationMenu.classList.remove('open'));
+  document.addEventListener('click', e => {
     if (!renovationMenu.contains(e.target) && !settingsTrigger.contains(e.target) && renovationMenu.classList.contains('open')) {
       renovationMenu.classList.remove('open');
     }
   });
 
-  // Theme Swap Handler
+  // Restore saved theme
+  const savedTheme = localStorage.getItem('couple-theme');
+  if (savedTheme) {
+    document.body.className = savedTheme !== 'default' ? savedTheme : '';
+    themeSwatches.forEach(s => {
+      s.classList.toggle('active', s.getAttribute('data-theme') === savedTheme);
+    });
+  }
+
   themeSwatches.forEach(swatch => {
     swatch.addEventListener('click', () => {
-      // Remove active class from all swatches
       themeSwatches.forEach(s => s.classList.remove('active'));
       swatch.classList.add('active');
-
-      // Update body data-theme attribute
-      const selectedTheme = swatch.getAttribute('data-theme');
-      if (selectedTheme === 'cozy-morning') {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', selectedTheme);
-      }
+      const selected = swatch.getAttribute('data-theme');
+      document.body.className = selected !== 'default' ? selected : '';
+      localStorage.setItem('couple-theme', selected);
     });
   });
 
 
   // ==========================================
-  // 2. SPLIT-PANE WEATHER WINDOW
+  // 2. TOGETHER SINCE LIVE COUNTER
   // ==========================================
-  const weatherData = {
-    user1: { name: 'Ashwin', defaultWeather: 'rainy', temp: '22°C', label: 'Rainy afternoon' },
-    user2: { name: 'Aditi', defaultWeather: 'night', temp: '18°C', label: 'Starlit night' }
-  };
+  const anniversaryDate = new Date('2025-12-27T00:00:00');
+  const togetherCounter = document.getElementById('together-counter');
 
-  const weatherSelectUser1 = document.getElementById('weather-user1');
-  const weatherSelectUser2 = document.getElementById('weather-user2');
+  function updateCounter() {
+    const diff = Date.now() - anniversaryDate.getTime();
+    if (diff < 0) { togetherCounter.textContent = '0d 0h 0m 0s'; return; }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000)  / 60000);
+    const s = Math.floor((diff % 60000)    / 1000);
+    togetherCounter.textContent = `${d}d ${h}h ${m}m ${s}s`;
+  }
+  updateCounter();
+  setInterval(updateCounter, 1000);
 
-  function updatePaneWeather(paneId, status) {
-    const pane = document.getElementById(paneId);
-    const effectLayer = pane.querySelector('.weather-effect-layer');
-    const iconEl = pane.querySelector('.weather-icon');
-    const descEl = pane.querySelector('.loc-desc');
-    const tempEl = pane.querySelector('.temp');
 
-    // Reset styles and clear existing animations
-    pane.className = 'window-pane';
-    pane.classList.add(status);
-    effectLayer.innerHTML = '';
+  // ==========================================
+  // 3. WEATHER (Open-Meteo API)
+  // ==========================================
+  async function fetchWeather(lat, lon, paneId) {
+    try {
+      const res  = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+      const data = await res.json();
+      const temp  = Math.round(data.current_weather.temperature);
+      const isDay = data.current_weather.is_day;
+      const pane  = document.getElementById(paneId);
+      if (!pane) return;
+      const iconTemp = pane.querySelector('.weather-icon-temp');
+      const layer    = pane.querySelector('.weather-layer');
 
-    // Update details based on status
-    let iconClass = 'fa-sun';
-    let description = 'Sunny Day';
-    let temp = '26°C';
-
-    if (status === 'sunny') {
-      iconClass = 'fa-sun';
-      description = 'Warm sunbeam';
-      temp = '26°C';
-      // Create soft floating dust particles in solar rays
-      for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'snowflake'; // re-use circular shape
-        particle.style.background = 'rgba(255, 255, 255, 0.4)';
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        particle.style.width = particle.style.height = `${Math.random() * 4 + 2}px`;
-        particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
-        effectLayer.appendChild(particle);
+      if (isDay) {
+        iconTemp.innerHTML = `<i class="fa-solid fa-sun" style="color:#f1c40f;"></i> ${temp}°C`;
+        layer.style.background = 'linear-gradient(to bottom, #5ba3d9, #b8ddf5)';
+      } else {
+        iconTemp.innerHTML = `<i class="fa-solid fa-moon" style="color:#fdf5e6;"></i> ${temp}°C`;
+        layer.style.background = 'linear-gradient(to bottom, #070d1e, #141e38)';
+        layer.innerHTML = '';
+        for (let i = 0; i < 20; i++) {
+          const star = document.createElement('div');
+          star.style.cssText = `position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:${(Math.random()*0.6+0.4).toFixed(2)};left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;`;
+          layer.appendChild(star);
+        }
       }
-    } else if (status === 'rainy') {
-      iconClass = 'fa-cloud-showers-heavy';
-      description = 'Rainy afternoon';
-      temp = '22°C';
-      
-      // Inject raindrops
-      for (let i = 0; i < 35; i++) {
-        const drop = document.createElement('div');
-        drop.className = 'rain-drop';
-        drop.style.left = `${Math.random() * 100}%`;
-        drop.style.top = `${Math.random() * -30}px`;
-        drop.style.animationDelay = `${Math.random() * 1.5}s`;
-        drop.style.animationDuration = `${Math.random() * 0.5 + 0.8}s`;
-        effectLayer.appendChild(drop);
-      }
-    } else if (status === 'snowy') {
-      iconClass = 'fa-snowflake';
-      description = 'Soft snowfall';
-      temp = '-2°C';
-
-      // Inject snowflakes
-      for (let i = 0; i < 25; i++) {
-        const flake = document.createElement('div');
-        flake.className = 'snowflake';
-        flake.style.left = `${Math.random() * 100}%`;
-        flake.style.top = `${Math.random() * -20}px`;
-        flake.style.width = flake.style.height = `${Math.random() * 6 + 4}px`;
-        flake.style.animationDelay = `${Math.random() * 3}s`;
-        flake.style.animationDuration = `${Math.random() * 2 + 2}s`;
-        effectLayer.appendChild(flake);
-      }
-    } else if (status === 'night') {
-      iconClass = 'fa-moon';
-      description = 'Starlit night';
-      temp = '18°C';
-
-      // Inject stars
-      for (let i = 0; i < 30; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.width = star.style.height = `${Math.random() * 3 + 1}px`;
-        star.style.animationDelay = `${Math.random() * 2}s`;
-        effectLayer.appendChild(star);
-      }
-    }
-
-    // Set updated values
-    iconEl.className = `weather-icon fa-solid ${iconClass}`;
-    descEl.textContent = description;
-    tempEl.textContent = temp;
+    } catch (e) { console.warn('Weather error', paneId, e); }
   }
 
-  // Initialize defaults
-  updatePaneWeather('pane-user1', weatherData.user1.defaultWeather);
-  updatePaneWeather('pane-user2', weatherData.user2.defaultWeather);
-
-  // Bind change listeners to select controls in theme menu
-  weatherSelectUser1.addEventListener('change', (e) => {
-    updatePaneWeather('pane-user1', e.target.value);
-  });
-  weatherSelectUser2.addEventListener('change', (e) => {
-    updatePaneWeather('pane-user2', e.target.value);
-  });
+  fetchWeather(20.9374, 77.7796, 'pane-aditi');
+  fetchWeather(12.9716, 77.5946, 'pane-ashwin');
 
 
   // ==========================================
-  // 3. REAL-TIME "LEAVE A LIGHT ON" DESK LAMP
+  // 4. TV WATCHLIST — Stored, Editable, TVMaze Posters
   // ==========================================
-  const deskLamp = document.getElementById('desk-lamp');
+  setupModal('tv-modal', 'room-tv', 'tv-close');
 
-  deskLamp.addEventListener('click', () => {
-    const isNowOn = deskLamp.classList.toggle('lamp-on');
-    
-    // Simulate real-time sync with database console explanation
-    console.log(`[Realtime Sync] Desk Lamp State Changed: ${isNowOn ? 'ON' : 'OFF'}`);
-    console.log(
-      `%cTo synchronize this live across two users, connect Firebase RTDB as follows:
-      
-      // 1. Reference database path for the lamp state:
-      const lampRef = firebase.database().ref('rooms/sharedRoom/deskLamp');
-      
-      // 2. Writing changes when user clicks:
-      deskLamp.addEventListener('click', () => {
-        const nextState = !deskLamp.classList.contains('lamp-on');
-        lampRef.set(nextState);
-      });
-      
-      // 3. Listening for value changes to update other user's screen instantly:
-      lampRef.on('value', (snapshot) => {
-        const isLampOn = snapshot.val();
-        if (isLampOn) {
-          deskLamp.classList.add('lamp-on');
-        } else {
-          deskLamp.classList.remove('lamp-on');
-        }
-      });`,
-      'color: #d1b06c; font-family: monospace; font-size: 12px; line-height: 1.5;'
-    );
-  });
+  const watchlistForm    = document.getElementById('watchlist-form');
+  const titleInput       = document.getElementById('watch-title-input');
+  const tvActivePoster   = document.getElementById('tv-active-poster');
+  const loadingIndicator = document.getElementById('loading-indicator');
+  const tvErrorMsg       = document.getElementById('tv-error-msg');
+  const watchlistItems   = document.getElementById('watchlist-items');
+  const watchlistCount   = document.getElementById('watchlist-count');
+  const watchlistEmpty   = document.getElementById('watchlist-empty');
 
+  // Watchlist stored in localStorage
+  // Each entry: { id, title, poster, watched }
+  let watchlist = JSON.parse(localStorage.getItem('couple-watchlist') || '[]');
 
-  // ==========================================
-  // 4. INTERACTIVE MEMORY FRAMES & MODALS
-  // ==========================================
-  const photoFrames = document.querySelectorAll('.photo-frame');
-  const galleryModal = document.getElementById('gallery-modal');
-  const galleryClose = document.getElementById('gallery-close');
+  function saveWatchlist() {
+    localStorage.setItem('couple-watchlist', JSON.stringify(watchlist));
+  }
 
-  photoFrames.forEach(frame => {
-    frame.addEventListener('click', () => {
-      galleryModal.classList.add('open');
-      galleryModal.setAttribute('aria-hidden', 'false');
-    });
-    // Support Enter/Space accessibility
-    frame.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        frame.click();
-      }
-    });
-  });
+  function renderWatchlist() {
+    watchlistItems.innerHTML = '';
+    watchlistCount.textContent = watchlist.length ? `(${watchlist.length})` : '';
 
-  galleryClose.addEventListener('click', () => {
-    galleryModal.classList.remove('open');
-    galleryModal.setAttribute('aria-hidden', 'true');
-  });
-
-  // Close modal when clicking dark overlay
-  galleryModal.addEventListener('click', (e) => {
-    if (e.target === galleryModal) {
-      galleryClose.click();
-    }
-  });
-
-
-  // ==========================================
-  // 5. THE COUNTDOWN CALENDAR
-  // ==========================================
-  // Set target date: 45 days in the future for simulation
-  const targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + 45);
-  targetDate.setHours(targetDate.getHours() + 6);
-  targetDate.setMinutes(targetDate.getMinutes() + 30);
-
-  const daysEl = document.getElementById('days');
-  const hoursEl = document.getElementById('hours');
-  const minutesEl = document.getElementById('minutes');
-  const secondsEl = document.getElementById('seconds');
-
-  function updateCountdown() {
-    const now = new Date();
-    const difference = targetDate.getTime() - now.getTime();
-
-    if (difference <= 0) {
-      clearInterval(countdownTimer);
-      daysEl.textContent = '00';
-      hoursEl.textContent = '00';
-      minutesEl.textContent = '00';
-      secondsEl.textContent = '00';
-      document.querySelector('.calendar-footer').innerHTML = 'Reunited! ❤️';
+    if (watchlist.length === 0) {
+      watchlistItems.appendChild(watchlistEmpty);
+      watchlistEmpty.style.display = 'block';
       return;
     }
+    watchlistEmpty.style.display = 'none';
 
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    watchlist.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'watchlist-row';
+      row.innerHTML = `
+        <img class="watchlist-poster-thumb" src="${item.poster}" alt="${item.title}" onerror="this.style.display='none'">
+        <div style="flex:1;min-width:0;">
+          <div class="watchlist-title">${item.title}</div>
+          <div class="watchlist-status">
+            <input type="checkbox" id="wl-chk-${idx}" ${item.watched ? 'checked' : ''} title="Mark as watched">
+            <label for="wl-chk-${idx}" style="font-size:0.8rem;cursor:pointer;color:var(--text-muted);margin-left:4px;">${item.watched ? '<span class="watched-badge">✓ Watched</span>' : 'Mark watched'}</label>
+          </div>
+        </div>
+        <div class="watchlist-actions">
+          <button class="btn-cast" title="Cast to TV">▶ Cast</button>
+          <button class="btn-wl-delete" title="Remove">&times;</button>
+        </div>
+      `;
 
-    daysEl.textContent = String(days).padStart(2, '0');
-    hoursEl.textContent = String(hours).padStart(2, '0');
-    minutesEl.textContent = String(minutes).padStart(2, '0');
-    secondsEl.textContent = String(seconds).padStart(2, '0');
+      // Cast to TV
+      row.querySelector('.btn-cast').addEventListener('click', () => {
+        tvActivePoster.src = item.poster;
+        document.getElementById('tv-close').click();
+      });
+
+      // Delete
+      row.querySelector('.btn-wl-delete').addEventListener('click', () => {
+        watchlist.splice(idx, 1);
+        saveWatchlist();
+        renderWatchlist();
+      });
+
+      // Watched toggle
+      row.querySelector(`#wl-chk-${idx}`).addEventListener('change', (e) => {
+        watchlist[idx].watched = e.target.checked;
+        saveWatchlist();
+        renderWatchlist();
+      });
+
+      watchlistItems.appendChild(row);
+    });
   }
 
-  // Update calendar initially and launch interval
-  updateCountdown();
-  const countdownTimer = setInterval(updateCountdown, 1000);
+  // Fetch poster from TVMaze, fall back to a placeholder
+  async function fetchPoster(title) {
+    // Try TVMaze (TV shows)
+    try {
+      const res  = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(title)}`);
+      const data = await res.json();
+      if (data[0]?.show?.image?.original) {
+        return { url: data[0].show.image.original, source: 'tvmaze' };
+      }
+    } catch (_) {}
+
+    // Fallback: Pollinations AI generated poster art
+    const prompt = encodeURIComponent(`Cinematic movie poster for "${title}", dramatic lighting, photorealistic`);
+    return {
+      url: `https://image.pollinations.ai/prompt/${prompt}?width=400&height=600&nologo=true&seed=${Date.now()}`,
+      source: 'pollinations'
+    };
+  }
+
+  watchlistForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = titleInput.value.trim();
+    if (!title) return;
+
+    loadingIndicator.style.display = 'block';
+    tvErrorMsg.style.display = 'none';
+
+    try {
+      const { url } = await fetchPoster(title);
+
+      // Add to watchlist
+      watchlist.unshift({ id: Date.now(), title, poster: url, watched: false });
+      saveWatchlist();
+      renderWatchlist();
+      titleInput.value = '';
+      loadingIndicator.style.display = 'none';
+    } catch (err) {
+      loadingIndicator.style.display = 'none';
+      tvErrorMsg.textContent = 'Could not fetch poster. Entry saved without image.';
+      tvErrorMsg.style.display = 'block';
+      watchlist.unshift({ id: Date.now(), title, poster: '', watched: false });
+      saveWatchlist();
+      renderWatchlist();
+      titleInput.value = '';
+    }
+  });
+
+  renderWatchlist();
 
 
   // ==========================================
-  // 6. THE DESK NOTEBOOK ("Open When" Letters)
+  // 5. DESK INTERACTIVITY
   // ==========================================
-  const deskNotebook = document.getElementById('desk-notebook');
-  const notebookModal = document.getElementById('notebook-modal');
-  const notebookClose = document.getElementById('notebook-close');
+  const deskLamp = document.getElementById('desk-lamp');
+  deskLamp.addEventListener('click', () => deskLamp.classList.toggle('lamp-on'));
+  deskLamp.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); deskLamp.click(); } });
 
-  const envelopeCards = document.querySelectorAll('.envelope-card');
-  const letterModal = document.getElementById('letter-modal');
-  const letterClose = document.getElementById('letter-close');
-  const letterTitle = document.getElementById('letter-title');
-  const letterBody = document.getElementById('letter-body');
+  setupModal('notebook-modal', 'open-letters', 'notebook-close');
+  setupModal('jukebox-modal',  'open-radio',   'jukebox-close');
 
-  const lettersContent = {
-    'miss-me': {
-      title: 'Open when you miss me',
-      body: `Hey my favorite person, \n\nWhenever the miles feel a bit too long and my voice feels too far, close your eyes and take a deep breath. Remember that every single day brings us closer to being in the same room, sharing the same sun, and making new memories. You are my favorite thought. Distance is only temporary, but my love for you is forever. I miss you tons.`
-    },
-    'cant-sleep': {
-      title: "Open when you can't sleep",
-      body: `Hey sleepyhead, \n\nStill awake? I wish I could be there to tuck you in, play with your hair, and whisper silly stories until you fall asleep. Think of this letter as a warm, cozy hug wrapping around you. Close your eyes, listen to the quiet, and rest easy knowing you're the last thing on my mind before I sleep, and the first when I wake. Sweet dreams!`
-    },
-    'sad-day': {
-      title: 'Open when you have a bad day',
-      body: `Hey beautiful, \n\nI’m sorry today wasn't kind to you. If I were there, I’d make your favorite warm tea and listen to you vent for hours, or just sit beside you in comfortable silence. Please don't be too hard on yourself. You are incredibly strong, kind, and capable. Tomorrow is a brand new page, and I'll be here cheering you on, no matter what. Love you.`
-    },
-    'need-laugh': {
-      title: 'Open when you need a smile',
-      body: `Hey you, \n\nDid you know that sea otters hold hands when they sleep so they don't drift apart? Or that cows have best friends and get stressed when they are separated? Well, just like them, I'm stuck to you in spirit! Think of my goofy laugh and the silly faces I make just to hear you giggle. Smile, because you have the prettiest laugh in the world, and it makes my entire day.`
-    }
-  };
 
-  // Open Notebook Envelopes Overlay
-  deskNotebook.addEventListener('click', () => {
-    notebookModal.classList.add('open');
-    notebookModal.setAttribute('aria-hidden', 'false');
-  });
-
-  deskNotebook.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      deskNotebook.click();
-    }
-  });
-
-  notebookClose.addEventListener('click', () => {
-    notebookModal.classList.remove('open');
-    notebookModal.setAttribute('aria-hidden', 'true');
-  });
-
-  // Close notebook modal on backdrop click
-  notebookModal.addEventListener('click', (e) => {
-    if (e.target === notebookModal) {
-      notebookClose.click();
-    }
-  });
-
-  // Envelope Clicks
-  envelopeCards.forEach(card => {
-    card.addEventListener('click', (e) => {
-      const noteId = card.getAttribute('data-note-id');
-      const letterData = lettersContent[noteId];
-
-      if (letterData) {
-        letterTitle.textContent = letterData.title;
-        // Format newlines into HTML breaks
-        letterBody.innerHTML = letterData.body.replace(/\n/g, '<br>');
-        
-        // Open the letter modal
-        letterModal.classList.add('open');
-        letterModal.setAttribute('aria-hidden', 'false');
-      }
+  // ==========================================
+  // 6. OPEN WHEN LETTERS — EXPAND/COLLAPSE
+  // ==========================================
+  const envelopeWrappers = document.querySelectorAll('.envelope-wrapper');
+  envelopeWrappers.forEach(wrapper => {
+    wrapper.addEventListener('click', () => {
+      const isOpen = wrapper.classList.contains('open');
+      // Close all others
+      envelopeWrappers.forEach(w => w.classList.remove('open'));
+      // Toggle current
+      if (!isOpen) wrapper.classList.add('open');
     });
-
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.click();
-      }
+    wrapper.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wrapper.click(); }
     });
   });
 
-  // Close individual letter
-  letterClose.addEventListener('click', () => {
-    letterModal.classList.remove('open');
-    letterModal.setAttribute('aria-hidden', 'true');
+
+  // ==========================================
+  // 7. MEMORY GALLERY MODAL
+  // ==========================================
+  setupModal('gallery-modal', 'open-gallery', 'gallery-close');
+
+
+  // ==========================================
+  // 8. FUTURE TRAVEL PLANNER
+  // ==========================================
+  setupModal('suitcase-modal', 'travel-suitcase', 'suitcase-close');
+
+  const travelChecklist = document.getElementById('travel-checklist');
+  const addTravelForm   = document.getElementById('add-travel-item-form');
+  const newTravelInput  = document.getElementById('new-travel-item');
+
+  let travelList = JSON.parse(localStorage.getItem('couple-travel') || 'null') || [
+    { text: 'Café Clover, Pune', checked: true },
+    { text: 'Nandi Hills, Bangalore', checked: false },
+    { text: 'Coorg hill station, Karnataka', checked: false },
+    { text: 'Marine Drive at sunset, Mumbai', checked: false },
+    { text: 'Pondicherry French quarter', checked: false },
+  ];
+
+  function saveTravelList() { localStorage.setItem('couple-travel', JSON.stringify(travelList)); }
+
+  function buildMapsUrl(loc) { return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`; }
+
+  function renderTravelList() {
+    travelChecklist.innerHTML = '';
+    travelList.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'checklist-item';
+      div.innerHTML = `
+        <div class="checklist-left">
+          <input type="checkbox" id="chk-${idx}" ${item.checked ? 'checked' : ''}>
+          <label for="chk-${idx}" style="${item.checked ? 'text-decoration:line-through;opacity:0.55;' : ''}">${item.text}</label>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <a href="${buildMapsUrl(item.text)}" class="btn-map-link" target="_blank" rel="noopener"><i class="fa-solid fa-map-location-dot"></i> Maps</a>
+          <button class="btn-delete">&times;</button>
+        </div>
+      `;
+      div.querySelector('input').addEventListener('change', e => { item.checked = e.target.checked; saveTravelList(); renderTravelList(); });
+      div.querySelector('.btn-delete').addEventListener('click', () => { travelList.splice(idx, 1); saveTravelList(); renderTravelList(); });
+      travelChecklist.appendChild(div);
+    });
+  }
+
+  addTravelForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = newTravelInput.value.trim();
+    if (val) { travelList.push({ text: val, checked: false }); newTravelInput.value = ''; saveTravelList(); renderTravelList(); }
   });
 
-  letterModal.addEventListener('click', (e) => {
-    if (e.target === letterModal) {
-      letterClose.click();
+  renderTravelList();
+
+
+  // ==========================================
+  // 9. CANVAS SPINNER WHEEL — SYNCHRONIZED MATH
+  // ==========================================
+  // Open takeout modal from kitchen card
+  const kitchenCard   = document.getElementById('kitchen-pizza');
+  const spinPreviewBtn = kitchenCard ? kitchenCard.querySelector('.btn-spin-preview') : null;
+  const takeoutModal  = document.getElementById('takeout-modal');
+
+  function openTakeout() {
+    if (takeoutModal) { takeoutModal.classList.add('open'); takeoutModal.setAttribute('aria-hidden', 'false'); }
+  }
+  if (kitchenCard)  { kitchenCard.addEventListener('click', openTakeout); kitchenCard.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTakeout(); } }); }
+  if (spinPreviewBtn) { spinPreviewBtn.addEventListener('click', e => { e.stopPropagation(); openTakeout(); }); }
+  document.getElementById('takeout-close')?.addEventListener('click', () => { takeoutModal.classList.remove('open'); takeoutModal.setAttribute('aria-hidden', 'true'); });
+  takeoutModal?.addEventListener('click', e => { if (e.target === takeoutModal) { takeoutModal.classList.remove('open'); } });
+
+  const canvas = document.getElementById('modal-spinner-canvas');
+  const ctx    = canvas ? canvas.getContext('2d') : null;
+
+  const cuisines = [
+    { text: 'Pizza 🍕',        color: '#e74c3c' },
+    { text: 'Chinese 🍜',      color: '#f39c12' },
+    { text: 'Burgers 🍔',      color: '#27ae60' },
+    { text: 'Sushi 🍣',        color: '#2980b9' },
+    { text: 'Desserts 🍩',     color: '#9b59b6' },
+    { text: 'Indian Thali 🍛', color: '#16a085' },
+  ];
+
+  const SLICE_COUNT = cuisines.length;
+  const SLICE_ANGLE = (2 * Math.PI) / SLICE_COUNT;
+  const POINTER_ANGLE = (3 * Math.PI) / 2; // top of canvas = 270°
+
+  let currentAngle = 0;
+  let isSpinning   = false;
+  let spinVelocity = 0;
+
+  const btnSpin       = document.getElementById('btn-spin');
+  const spinResultText = document.getElementById('spin-result-text');
+
+  function drawWheel() {
+    if (!ctx) return;
+    const size   = canvas.width;
+    const center = size / 2;
+    const radius = center - 3;
+
+    ctx.clearRect(0, 0, size, size);
+
+    for (let i = 0; i < SLICE_COUNT; i++) {
+      const startAngle = currentAngle + i * SLICE_ANGLE;
+      const endAngle   = startAngle + SLICE_ANGLE;
+
+      ctx.beginPath();
+      ctx.moveTo(center, center);
+      ctx.arc(center, center, radius, startAngle, endAngle);
+      ctx.closePath();
+      ctx.fillStyle = cuisines[i].color;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(center, center);
+      ctx.rotate(startAngle + SLICE_ANGLE / 2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold 13px 'Nunito', sans-serif`;
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur  = 4;
+      ctx.fillText(cuisines[i].text, radius - 12, 5);
+      ctx.restore();
     }
-  });
+
+    // Centre disc
+    ctx.beginPath();
+    ctx.arc(center, center, 16, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur  = 6;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  drawWheel();
+
+  function resolveWinner() {
+    const norm    = ((currentAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    let   relative = POINTER_ANGLE - norm;
+    relative       = ((relative % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    return Math.floor(relative / SLICE_ANGLE) % SLICE_COUNT;
+  }
+
+  function animateSpin() {
+    if (spinVelocity <= 0.0012) {
+      isSpinning = false;
+      if (btnSpin) btnSpin.disabled = false;
+      const winner = resolveWinner();
+      spinResultText.textContent = cuisines[winner].text + '!';
+      return;
+    }
+    currentAngle += spinVelocity;
+    spinVelocity *= 0.983;
+    drawWheel();
+    requestAnimationFrame(animateSpin);
+  }
+
+  if (btnSpin) {
+    btnSpin.addEventListener('click', () => {
+      if (isSpinning) return;
+      isSpinning = true;
+      btnSpin.disabled = true;
+      spinResultText.textContent = 'Spinning… 🎡';
+      spinVelocity = Math.random() * 0.30 + 0.28;
+      requestAnimationFrame(animateSpin);
+    });
+  }
 
 });

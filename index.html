@@ -3,296 +3,350 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Cozy Space - Virtual Apartment</title>
-  <!-- Google Fonts: Outfit for UI, Dancing Script for personal notes -->
+  <title>Our Cozy Space — Aditi & Ashwin</title>
+  <meta name="description" content="A digital sanctuary built for two hearts, miles apart. 💕">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- FontAwesome for icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Background Ambient Glow -->
-  <div class="ambient-glow"></div>
+  <!-- Ambient Background -->
+  <div class="ambient-bg"></div>
 
-  <!-- Settings Trigger (Gear Icon) -->
-  <button id="settings-trigger" class="btn-icon" aria-label="Open Renovation Menu">
-    <i class="fa-solid fa-cog"></i>
+  <!-- Renovation Menu Toggle -->
+  <button id="settings-trigger" class="btn-settings" aria-label="Renovation Menu">
+    <i class="fa-solid fa-paint-roller"></i>
   </button>
 
-  <!-- Renovation Menu (Settings Drawer) -->
-  <aside id="renovation-menu" class="settings-drawer">
-    <div class="drawer-header">
-      <h3><i class="fa-solid fa-paint-roller"></i> Renovation Menu</h3>
+  <!-- Renovation Menu Tray -->
+  <div id="renovation-menu" class="settings-tray" role="dialog" aria-label="Renovation Menu">
+    <div class="settings-header">
+      <h3>🏠 Renovation Menu</h3>
       <button id="settings-close" class="btn-close">&times;</button>
     </div>
-    <div class="drawer-content">
-      <p class="section-title">Wall Paint & Decor Theme</p>
-      <div class="theme-options">
-        <button class="theme-swatch active" data-theme="cozy-morning" style="background: linear-gradient(135deg, #fcf8f2, #e8a7a1);">
-          <span>Cozy Morning</span>
-        </button>
-        <button class="theme-swatch" data-theme="sage-serenity" style="background: linear-gradient(135deg, #edf2ee, #7da087);">
-          <span>Sage Serenity</span>
-        </button>
-        <button class="theme-swatch" data-theme="midnight-loft" style="background: linear-gradient(135deg, #111a2e, #e6c280);">
-          <span>Midnight Loft</span>
-        </button>
-      </div>
-
-      <p class="section-title" style="margin-top: 2rem;">Weather Controls (Demo)</p>
-      <div class="weather-controls">
-        <div class="control-group">
-          <label for="weather-user1">User 1 (Location A)</label>
-          <select id="weather-user1">
-            <option value="sunny">Sunny</option>
-            <option value="rainy" selected>Rainy</option>
-            <option value="snowy">Snowy</option>
-            <option value="night">Clear Night</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="weather-user2">User 2 (Location B)</label>
-          <select id="weather-user2">
-            <option value="sunny">Sunny</option>
-            <option value="rainy">Rainy</option>
-            <option value="snowy">Snowy</option>
-            <option value="night" selected>Clear Night</option>
-          </select>
-        </div>
-      </div>
+    <p class="settings-desc">Redecorate our space:</p>
+    <div class="theme-options">
+      <button class="theme-swatch active" data-theme="default">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#0a0f16,#f5b041);"></div>
+        <div class="swatch-info"><span class="swatch-name">🌙 Starry Midnight</span><span class="swatch-sub">Dark & cozy</span></div>
+      </button>
+      <button class="theme-swatch" data-theme="theme-amravati">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#fdf6e3,#e5989b);"></div>
+        <div class="swatch-info"><span class="swatch-name">☕ Morning Coffee</span><span class="swatch-sub">Warm Amravati mornings</span></div>
+      </button>
+      <button class="theme-swatch" data-theme="theme-bangalore">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#e8f0e6,#7a9e7e);"></div>
+        <div class="swatch-info"><span class="swatch-name">🌿 Bangalore Garden</span><span class="swatch-sub">Fresh & serene</span></div>
+      </button>
+      <button class="theme-swatch" data-theme="theme-cherry">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#fff0f5,#ff85a2);"></div>
+        <div class="swatch-info"><span class="swatch-name">🌸 Cherry Blossom</span><span class="swatch-sub">Soft & dreamy</span></div>
+      </button>
+      <button class="theme-swatch" data-theme="theme-autumn">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#3b1f0e,#e07b39);"></div>
+        <div class="swatch-info"><span class="swatch-name">🍂 Autumn Cabin</span><span class="swatch-sub">Warm & rustic</span></div>
+      </button>
+      <button class="theme-swatch" data-theme="theme-ocean">
+        <div class="swatch-color" style="background:linear-gradient(135deg,#e0f7fa,#00838f);"></div>
+        <div class="swatch-info"><span class="swatch-name">🌊 Ocean Breeze</span><span class="swatch-sub">Calm & refreshing</span></div>
+      </button>
     </div>
-  </aside>
+  </div>
 
-  <!-- Dashboard Container -->
-  <main class="apartment-container">
-    
-    <!-- Title / Welcome -->
-    <header class="app-header">
-      <h1>Our Cozy Space</h1>
-      <p>A little digital sanctuary built for two hearts miles apart.</p>
-    </header>
+  <header class="app-header">
+    <h1 class="font-display">Our Cozy Space</h1>
+    <p>A digital sanctuary built for two hearts, miles apart. 💕</p>
+  </header>
 
-    <!-- The Living Room Wall Grid -->
-    <section class="room-wall">
-      
-      <!-- Split-Pane Weather Window -->
-      <article class="weather-window-container" id="weather-window">
-        <div class="window-frame">
-          <div class="window-pane pane-left" id="pane-user1">
-            <div class="pane-content">
-              <span class="user-label">Ashwin</span>
-              <div class="weather-effect-layer"></div>
-              <div class="weather-info">
-                <i class="weather-icon fa-solid fa-cloud-showers-heavy"></i>
-                <span class="temp">22°C</span>
-                <span class="loc-desc">Rainy afternoon</span>
-              </div>
-            </div>
+  <!-- Dashboard Grid -->
+  <main class="dashboard-container">
+
+    <!-- Left Column -->
+    <div class="dash-col">
+      <!-- Anniversary Plaque -->
+      <section class="card plaque-card">
+        <div class="card-header"><i class="fa-solid fa-heart"></i> Together Since</div>
+        <div class="plaque-date font-cursive">27 December 2025</div>
+        <div class="plaque-timer" id="together-counter">0d 0h 0m 0s</div>
+        <div class="plaque-sub">and every second counts 💞</div>
+      </section>
+
+      <!-- Weather Split -->
+      <section class="card weather-card">
+        <div class="card-header"><i class="fa-solid fa-cloud-sun"></i> Right Now</div>
+        <div class="weather-split">
+          <div class="weather-pane" id="pane-aditi">
+            <h3 class="font-cursive">Aditi</h3>
+            <p class="loc">📍 Amravati</p>
+            <div class="weather-icon-temp"><i class="fa-solid fa-cloud"></i> --°C</div>
+            <div class="weather-layer"></div>
           </div>
-          <div class="window-pane pane-right" id="pane-user2">
-            <div class="pane-content">
-              <span class="user-label">Aditi</span>
-              <div class="weather-effect-layer"></div>
-              <div class="weather-info">
-                <i class="weather-icon fa-solid fa-moon"></i>
-                <span class="temp">18°C</span>
-                <span class="loc-desc">Starlit night</span>
-              </div>
-            </div>
+          <div class="weather-pane" id="pane-ashwin">
+            <h3 class="font-cursive">Ashwin</h3>
+            <p class="loc">📍 Bangalore</p>
+            <div class="weather-icon-temp"><i class="fa-solid fa-cloud"></i> --°C</div>
+            <div class="weather-layer"></div>
           </div>
         </div>
-        <div class="window-sill"></div>
-      </article>
+      </section>
 
-      <!-- 3 Memory Photo Frames -->
-      <article class="memory-wall">
-        <div class="wall-shelf">
-          <div class="photo-frame" data-gallery-index="0" tabindex="0">
-            <div class="frame-border">
-              <div class="photo-container">
-                <img src="images/sunset.png" alt="Couple watching sunset">
-              </div>
-            </div>
-            <div class="frame-tag">Golden Hours</div>
+      <!-- Desk & Notes -->
+      <section class="card desk-card">
+        <div class="card-header"><i class="fa-solid fa-pen-nib"></i> The Study Desk</div>
+        <div class="desk-surface">
+          <!-- Desk Lamp (z-index kept lower than other desk items) -->
+          <div class="graphic-lamp" id="desk-lamp" tabindex="0" role="button" aria-label="Toggle Lamp">
+            <div class="lamp-head"></div>
+            <div class="lamp-arm"></div>
+            <div class="lamp-base"></div>
+            <div class="lamp-glow"></div>
+            <div class="lamp-note font-cursive" id="lamp-note">Aditi turned the light on — thinking of you, Ashwin 💡</div>
           </div>
 
-          <div class="photo-frame" data-gallery-index="1" tabindex="0">
-            <div class="frame-border">
-              <div class="photo-container">
-                <img src="images/cafe.png" alt="Cozy rainy cafe">
-              </div>
-            </div>
-            <div class="frame-tag">Our Cafe Date</div>
+          <!-- Vintage Jukebox -->
+          <div class="graphic-jukebox" id="open-radio" tabindex="0" role="button" aria-label="Open Jukebox">
+            <div class="juke-top"></div>
+            <div class="juke-speaker"></div>
+            <div class="juke-dials"></div>
           </div>
 
-          <div class="photo-frame" data-gallery-index="2" tabindex="0">
-            <div class="frame-border">
-              <div class="photo-container">
-                <img src="images/bridge.png" alt="Starlit bridge walk">
-              </div>
-            </div>
-            <div class="frame-tag">Under the Stars</div>
+          <!-- Open When Notebook — positioned to avoid lamp overlap -->
+          <div class="graphic-notebook" id="open-letters" tabindex="0" role="button" aria-label="Open Letters">
+            <div class="notebook-cover">Open<br>When</div>
           </div>
         </div>
-      </article>
+      </section>
+    </div>
 
-      <!-- Countdown Calendar -->
-      <article class="countdown-calendar" tabindex="0">
-        <div class="calendar-ring-left"></div>
-        <div class="calendar-ring-right"></div>
-        <div class="calendar-header">
-          <span class="month">Reunion Countdown</span>
-        </div>
-        <div class="calendar-body">
-          <div class="countdown-display">
-            <div class="time-block">
-              <span class="time-val" id="days">00</span>
-              <span class="time-lbl">Days</span>
-            </div>
-            <div class="time-block">
-              <span class="time-val" id="hours">00</span>
-              <span class="time-lbl">Hours</span>
-            </div>
-            <div class="time-block">
-              <span class="time-val" id="minutes">00</span>
-              <span class="time-lbl">Mins</span>
-            </div>
-            <div class="time-block">
-              <span class="time-val" id="seconds">00</span>
-              <span class="time-lbl">Secs</span>
-            </div>
+    <!-- Center Column (TV & Kitchen) -->
+    <div class="dash-col col-main">
+      <!-- Smart TV -->
+      <section class="card tv-card">
+        <div class="card-header"><i class="fa-solid fa-tv"></i> Entertainment Center</div>
+        <div class="tv-screen" id="room-tv" tabindex="0" role="button" aria-label="Update Watchlist TV">
+          <img id="tv-active-poster" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80" alt="TV Poster">
+          <div class="tv-overlay">
+            <span><i class="fa-solid fa-play"></i> Our Watchlist</span>
+            <span class="click-hint">Click to manage & cast ✨</span>
           </div>
-          <p class="calendar-footer">Until we meet again! <i class="fa-solid fa-heart beat"></i></p>
         </div>
-      </article>
+      </section>
 
-    </section>
-
-    <!-- The Desk (Floor Area) -->
-    <section class="room-floor">
-      <div class="desk-surface">
-        
-        <!-- Interactive Desk Lamp -->
-        <div class="lamp-interactive-area" id="desk-lamp" tabindex="0" aria-label="Toggle Desk Lamp">
-          <div class="lamp-glow-zone"></div>
-          <svg class="lamp-svg" viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
-            <!-- Lamp Base -->
-            <path class="lamp-base" d="M30 140 C 30 130, 70 130, 70 140 Z" fill="#5c5c5c"/>
-            <rect class="lamp-base-bottom" x="25" y="140" width="50" height="6" rx="3" fill="#3a3a3a"/>
-            <!-- Lamp Neck/Arm -->
-            <path class="lamp-arm" d="M 50 130 L 50 80 L 35 50" stroke="#5c5c5c" stroke-width="6" stroke-linecap="round" fill="none"/>
-            <circle cx="50" cy="80" r="5" fill="#3a3a3a"/>
-            <circle cx="35" cy="50" r="5" fill="#3a3a3a"/>
-            <!-- Lamp Head Joint & Shade -->
-            <path class="lamp-shade" d="M 15 50 L 55 35 L 70 65 L 30 80 Z" fill="#e74c3c"/>
-            <!-- Bulb -->
-            <circle class="lamp-bulb" cx="48" cy="60" r="8" fill="#f1c40f"/>
-            <!-- Light Beam (drawn but controlled via CSS opacity) -->
-            <polygon class="lamp-beam" points="40 68, 0 150, 100 150, 56 62" fill="url(#beam-grad)" opacity="0"/>
-            
-            <defs>
-              <linearGradient id="beam-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#fff2a3" stop-opacity="0.8"/>
-                <stop offset="10%" stop-color="#fff2a3" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#fff2a3" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div class="lamp-label">Leave a Light On</div>
-        </div>
-
-        <!-- The Desk Notebook -->
-        <div class="notebook-interactive" id="desk-notebook" tabindex="0" aria-label="Open Letters Notebook">
-          <div class="notebook-cover">
-            <div class="notebook-spine"></div>
-            <div class="notebook-content-mock">
-              <i class="fa-solid fa-envelope"></i>
-              <span>Open When...</span>
-            </div>
-            <div class="notebook-bookmark"></div>
+      <!-- Takeout Wheel -->
+      <section class="card takeout-card">
+        <div class="card-header"><i class="fa-solid fa-pizza-slice"></i> Date Night Kitchen</div>
+        <div class="kitchen-glass" id="kitchen-pizza" tabindex="0" role="button" aria-label="Spin the Takeout Wheel">
+          <div class="kitchen-emoji-row">
+            <span>🍕</span><span>🍜</span><span>🍣</span><span>🍔</span><span>🍛</span><span>🍩</span>
           </div>
-          <div class="notebook-label">Love Letters</div>
+          <div class="kitchen-cta">
+            <i class="fa-solid fa-dharmachakra spin-icon"></i>
+            <p>What are we ordering tonight?</p>
+            <button class="btn-spin-preview">Spin the Wheel 🎡</button>
+          </div>
         </div>
+      </section>
+    </div>
 
-      </div>
-      
-      <!-- Cozy Rug under desk -->
-      <div class="cozy-rug"></div>
-    </section>
+    <!-- Right Column -->
+    <div class="dash-col">
+      <!-- Memory Gallery -->
+      <section class="card memory-card">
+        <div class="card-header"><i class="fa-solid fa-images"></i> Memory Corkboard</div>
+        <div class="corkboard-grid" id="open-gallery" tabindex="0" role="button" aria-label="Open Memory Gallery">
+          <div class="polaroid p-top1"></div>
+          <div class="polaroid p-top2"></div>
+          <div class="polaroid p-top3"></div>
+          <div class="polaroid p-bot1"></div>
+          <div class="polaroid p-bot2"></div>
+          <div class="polaroid p-bot3"></div>
+          <div class="polaroid p-bot4"></div>
+          <div class="corkboard-overlay">
+            <i class="fa-solid fa-expand"></i>
+            <span>View Our Memories</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Travel Planner -->
+      <section class="card travel-card">
+        <div class="card-header"><i class="fa-solid fa-suitcase-rolling"></i> Future Adventures</div>
+        <p class="card-subtitle">Our dream destinations & bucket list 🗺️</p>
+        <button class="btn-primary full-width" id="travel-suitcase"><i class="fa-solid fa-plane"></i> Open Travel Planner</button>
+      </section>
+    </div>
 
   </main>
 
-  <!-- Gallery Modal Overlay -->
-  <div id="gallery-modal" class="modal-overlay" aria-hidden="true">
+
+  <!-- ============================================================
+       MODALS
+       ============================================================ -->
+
+  <!-- Takeout Wheel Modal -->
+  <div id="takeout-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close" id="takeout-close">&times;</button>
+      <h2 class="modal-title"><i class="fa-solid fa-pizza-slice"></i> Date Night Takeout</h2>
+      <div class="takeout-wheel-box">
+        <div class="wheel-pointer-wrap"><div class="wheel-pointer-tri"></div></div>
+        <canvas id="modal-spinner-canvas" width="280" height="280"></canvas>
+        <button class="btn-spin" id="btn-spin">Spin the Wheel 🎡</button>
+      </div>
+      <div class="spin-result-card">
+        <h3>Tonight's Cuisine is:</h3>
+        <p class="result-text" id="spin-result-text">Ready to Spin?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TV Watchlist Modal — with stored list & edit -->
+  <div id="tv-modal" class="modal-overlay" aria-hidden="true">
     <div class="modal-container modal-large">
-      <button class="modal-close" id="gallery-close">&times;</button>
-      <h2 class="modal-title">Memory Lane</h2>
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="images/sunset.png" alt="Memory 1">
-          <div class="gallery-caption">Watching the golden sunset together. "I'd watch every sunset with you."</div>
+      <button class="modal-close" id="tv-close">&times;</button>
+      <h2 class="modal-title"><i class="fa-solid fa-tv"></i> Our Watch List</h2>
+      <p class="modal-subtitle">Add titles, click one to cast it to the TV screen.</p>
+
+      <div class="tv-modal-content">
+        <!-- Add new title form -->
+        <form class="watchlist-form" id="watchlist-form">
+          <input type="text" id="watch-title-input" placeholder="Add a movie or show (e.g. Interstellar)..." required>
+          <button type="submit" class="btn-submit"><i class="fa-solid fa-plus"></i> Add</button>
+        </form>
+
+        <div id="loading-indicator" style="display:none;text-align:center;margin:10px 0;color:var(--accent);">
+          <i class="fa-solid fa-spinner fa-spin"></i> Fetching poster…
         </div>
-        <div class="gallery-item">
-          <img src="images/cafe.png" alt="Memory 2">
-          <div class="gallery-caption">Sheltered from the rain inside our favorite little cafe. "Warm tea and warm hugs."</div>
-        </div>
-        <div class="gallery-item">
-          <img src="images/bridge.png" alt="Memory 3">
-          <div class="gallery-caption">Under the vast starlit night. "Distance means nothing when someone means everything."</div>
+        <div id="tv-error-msg" style="display:none;text-align:center;margin:8px 0;color:#e74c3c;font-size:0.88rem;"></div>
+
+        <!-- Saved watchlist -->
+        <div class="watchlist-label">Our List <span id="watchlist-count"></span></div>
+        <div class="watchlist-items" id="watchlist-items">
+          <div class="watchlist-empty" id="watchlist-empty">Nothing saved yet — add something above! 🍿</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Notebook "Open When" Modal Overlay -->
+  <!-- Travel Planner Modal -->
+  <div id="suitcase-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container modal-large">
+      <button class="modal-close" id="suitcase-close">&times;</button>
+      <h2 class="modal-title"><i class="fa-solid fa-plane"></i> Adventure Bucket List</h2>
+      <div class="travel-modal-content">
+        <div class="bucket-checklist-box">
+          <form id="add-travel-item-form" class="checklist-add-form">
+            <input type="text" id="new-travel-item" placeholder="Add a destination (e.g. Coorg, Karnataka)..." required>
+            <button type="submit"><i class="fa-solid fa-plus"></i> Add</button>
+          </form>
+          <div class="checklist-items" id="travel-checklist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jukebox Modal -->
+  <div id="jukebox-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close" id="jukebox-close">&times;</button>
+      <h2 class="modal-title"><i class="fa-solid fa-music"></i> Vintage Jukebox</h2>
+      <p class="modal-subtitle">Our songs, always playing 🎶</p>
+      <iframe src="https://open.spotify.com/embed/playlist/5c4HsBA3iBaKw2OjZxHCCF" width="100%" height="380" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    </div>
+  </div>
+
+  <!-- Open When Letters Modal -->
   <div id="notebook-modal" class="modal-overlay" aria-hidden="true">
     <div class="modal-container modal-large">
       <button class="modal-close" id="notebook-close">&times;</button>
-      <h2 class="modal-title font-cursive">Open When... Letters</h2>
-      <p class="modal-subtitle">Pick an envelope for whenever you need a little piece of me.</p>
-      
+      <h2 class="modal-title font-display"><i class="fa-regular fa-envelope-open"></i> Open When Letters</h2>
+      <p class="modal-subtitle">For Ashwin — from Aditi, with every piece of her heart 💌</p>
       <div class="envelopes-grid">
-        
-        <!-- Card 1 -->
-        <div class="envelope-card" data-note-id="miss-me" tabindex="0">
-          <div class="envelope-back"></div>
-          <div class="envelope-flap"></div>
-          <div class="envelope-front">
-            <span class="envelope-stamp"><i class="fa-solid fa-heart"></i></span>
-            <h3 class="envelope-title">...you miss me</h3>
+
+        <div class="envelope-wrapper" tabindex="0" data-note-id="miss-me">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you miss me</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>My dearest Ashwin, the miles between Bangalore and Amravati feel so impossibly cruel sometimes, don't they? When the ache of missing me becomes too heavy, please close your eyes and remember every second of us being together. Remember how it feels to have me right next to you — that warmth, that safety.</p>
+              <p>We are under the exact same moon tonight. Look up at it and know I am looking right back, thinking of nothing but you. This distance is the hardest thing I have ever done, and I would choose it a thousand times over just to call you mine. 💕</p>
+            </div>
           </div>
         </div>
 
-        <!-- Card 2 -->
-        <div class="envelope-card" data-note-id="cant-sleep" tabindex="0">
-          <div class="envelope-back"></div>
-          <div class="envelope-flap"></div>
-          <div class="envelope-front">
-            <span class="envelope-stamp"><i class="fa-solid fa-moon"></i></span>
-            <h3 class="envelope-title">...you can't sleep</h3>
+        <div class="envelope-wrapper" tabindex="0" data-note-id="cant-sleep">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you can't sleep</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>Ashwin, on the nights when your mind is too loud — I want you to imagine I am right there beside you. I am resting my head on your shoulder and our breathing is slowly finding the same rhythm.</p>
+              <p>In our little universe there is no Bangalore, no Amravati — just us, tangled up in a blanket fort made of your laughter and my terrible jokes. Breathe slowly and let sleep come. I am with you in every dream. Always. 🌙</p>
+            </div>
           </div>
         </div>
 
-        <!-- Card 3 -->
-        <div class="envelope-card" data-note-id="sad-day" tabindex="0">
-          <div class="envelope-back"></div>
-          <div class="envelope-flap"></div>
-          <div class="envelope-front">
-            <span class="envelope-stamp"><i class="fa-solid fa-cloud-rain"></i></span>
-            <h3 class="envelope-title">...you have a bad day</h3>
+        <div class="envelope-wrapper" tabindex="0" data-note-id="sad-day">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you have a hard day</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>Oh Ashwin. I am so sorry today was brutal. The world has absolutely no idea how extraordinary you are. You carry things so quietly, with such dignity, and I see every bit of it even when no one else does.</p>
+              <p>Today knocked you down, but it could never break you — you are made of stronger stuff than that. Take a shower, eat something warm, and be gentle with yourself tonight. Tomorrow you get to try again, and I will be cheering so loudly for you it should carry all the way from Amravati. ✨</p>
+            </div>
           </div>
         </div>
 
-        <!-- Card 4 -->
-        <div class="envelope-card" data-note-id="need-laugh" tabindex="0">
-          <div class="envelope-back"></div>
-          <div class="envelope-flap"></div>
-          <div class="envelope-front">
-            <span class="envelope-stamp"><i class="fa-solid fa-face-laugh-beam"></i></span>
-            <h3 class="envelope-title">...you need a smile</h3>
+        <div class="envelope-wrapper" tabindex="0" data-note-id="need-laugh">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you need to smile</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>Okay, Ashwin — mandatory smile incoming. Remember that time you tried to be so serious and I lost it over absolutely nothing? Or the completely unhinged things we say at midnight that make zero sense to anyone but us?</p>
+              <p>You have the most ridiculous, beautiful sense of humour and it is one of my favourite things about you. I think about you laughing — really properly laughing — and it makes my whole chest warm. You have the best smile in the world. Go on. I can feel it from here. 😄</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="envelope-wrapper" tabindex="0" data-note-id="overthinking">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you're overthinking</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>Stop. Breathe. Come back to me, Ashwin. I know your brain — it is brilliant and enormous and it has a very annoying habit of turning molehills into mountain ranges at 2 AM.</p>
+              <p>Whatever you are spiraling about right now, I promise it is not as catastrophic as it feels. You are safe. You are loved — fiercely, completely, without any conditions. Not because you are perfect, but because you are you, and to me that has always been more than enough. 💛</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="envelope-wrapper" tabindex="0" data-note-id="proud">
+          <div class="envelope-inner">
+            <div class="envelope-front">
+              <h3>…you achieved something</h3>
+              <i class="fa-regular fa-envelope"></i>
+              <p class="flip-hint">tap to open</p>
+            </div>
+            <div class="envelope-back">
+              <p>ASHWIN! You absolute star — I knew it. I KNEW it! Please take a moment and actually feel this, because you worked incredibly hard and you deserve every single bit of it.</p>
+              <p>I am so proud of you that I could burst. You doubt yourself sometimes, and I need you to know that I have never, not for a single second, doubted you. This is only the beginning of everything amazing coming your way. I love you. Celebrate tonight — you deserve it. 🥂🎉</p>
+            </div>
           </div>
         </div>
 
@@ -300,15 +354,15 @@
     </div>
   </div>
 
-  <!-- Single Letter Reading Overlay -->
-  <div id="letter-modal" class="modal-overlay letter-overlay" aria-hidden="true">
-    <div class="letter-paper">
-      <button class="modal-close letter-close" id="letter-close">&times;</button>
-      <div class="letter-stamp"><i class="fa-solid fa-heart"></i></div>
-      <div class="letter-content">
-        <h3 id="letter-title" class="font-cursive">Letter Title</h3>
-        <p id="letter-body" class="font-cursive">Letter text goes here...</p>
-        <p class="letter-signature font-cursive">Forever and always,<br>Your love ❤️</p>
+  <!-- Memory Gallery Modal -->
+  <div id="gallery-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container modal-gallery">
+      <button class="modal-close" id="gallery-close">&times;</button>
+      <h2 class="modal-title font-display"><i class="fa-solid fa-images"></i> Our Memories</h2>
+      <p class="modal-subtitle">Every photo, a chapter of us 📸</p>
+      <div class="gallery-fullview">
+        <img src="images/collage.jpg" alt="Aditi & Ashwin — Our Memory Collage" class="gallery-collage-img">
+        <div class="gallery-caption font-cursive">Every moment with you is my favourite 💕</div>
       </div>
     </div>
   </div>
